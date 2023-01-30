@@ -1,0 +1,67 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+  <%- include("./partials/nav.ejs") %>
+
+
+  <div class="details content">
+    <h2><%= blog.title %></h2>
+    <p>by <%= blog.author %> &nbsp; | &nbsp; <%= date.toLocaleString('en-GB', {day:'numeric', month: 'long',  year:'numeric'}) %></p>
+    <div>&nbsp;&nbsp;&nbsp;</div>
+    <div class="body content">
+        <p><%= blog.body %></p>
+    </div>
+    
+    <ul class="beside">
+      <li>
+        <a class = "delete" data-doc = "<%= blog._id %>">Delete</a>
+      </li>
+      <li>
+        <a class = "edit" href = "/blogs/update/<%= blog._id %>" data-document = "<%= blog._id %>">Edit</a>
+      </li>
+    </ul>
+  </div>
+
+
+  <script>
+    const trashcan = document.querySelector('a.delete');
+
+    trashcan.addEventListener('click',(e) => {
+        const endpoint = `/blogs/${trashcan.dataset.doc}`;
+
+        fetch(endpoint,{
+            method : 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => window.location.href = data.redirect)
+        .catch(err => console.log(err));
+    })
+  </script>
+  <!-- response : Data received from the backend : 
+    (Blog.findByIdAndDelete(id)
+      .then(result => {
+        res.json({redirect : '/blogs'});
+      })
+      .catch(err => {
+        console.log(err);
+      });)
+    We are parsing the data from json to javascript object which we can use,
+    window.location.href  is used to set or return the complete URL of the current page,
+    And the data we are getting back from backend is parsed into data which will have a property named : redirect which we will use to set the location -->
+  <!-- <script>
+    const update = document.querySelector('a.edit');
+
+    trashcan.addEventListener('click',(e) => {
+        const endapi = `/blogs/${update.dataset.document}`;
+
+        fetch(endapi,{
+            method : 'PUT'
+        })
+        .then(response => response.json())
+        .then(data => window.location.href = data.redirect)
+        .catch(err => console.log(err));
+    }) -->
+  </script>
+</body>
+</html>
